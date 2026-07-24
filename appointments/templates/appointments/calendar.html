@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mani V Kato — Календар</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/calendar.css' %}">
+</head>
+<body>
+
+  <header class="header">
+    <div class="header__logo">
+      <span class="header__logo-icon">✦</span>
+      <span class="header__logo-text">Mani V Kato</span>
+    </div>
+    <nav class="header__nav">
+      <span class="header__user">{{ request.user.get_full_name|default:request.user.username }}</span>
+      <a href="{% url 'accounts:profile' %}" class="btn btn--ghost">Профіль</a>
+      <form method="post" action="{% url 'accounts:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn--ghost">Вийти</button>
+      </form>
+    </nav>
+  </header>
+
+  <div class="toolbar">
+    <div class="toolbar__right">
+      <button class="btn btn--primary" id="add-btn">+ Новий запис</button>
+    </div>
+  </div>
+
+  <main class="main">
+    <section class="calendar-panel" aria-label="Спільний календар майстрів">
+      <div class="calendar-status" id="calendar-status" role="status">Завантаження записів...</div>
+      <div class="shared-calendar" id="shared-calendar">
+        <div class="shared-calendar__top" id="calendar-top"></div>
+        <div class="shared-calendar__body" id="calendar-body"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal__header">
+        <h3 class="modal__title" id="modal-title">Новий запис</h3>
+        <button class="modal__close" id="modal-close" type="button" aria-label="Закрити">&times;</button>
+      </div>
+      <form class="modal__form" id="appointment-form" method="POST" action="{% url 'appointments:add' %}">
+        {% csrf_token %}
+        <input type="hidden" name="appointment_id" id="field-appointment-id">
+
+        <div class="form-group">
+          <label class="form-label">Майстер</label>
+          <select class="form-input form-select" name="master" id="field-master" required>
+            {% for master in masters %}
+            <option value="{{ master.id }}">{{ master.get_full_name|default:master.username }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Дата</label>
+          <input class="form-input" type="date" name="date" id="field-date" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Початок</label>
+            <input class="form-input" type="time" name="start_time" id="field-start" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Кінець</label>
+            <input class="form-input" type="time" name="end_time" id="field-end" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Процедура</label>
+          <select class="form-input form-select" name="procedure" id="field-procedure" required>
+            <option value="">— оберіть процедуру —</option>
+            {% for p in procedures %}
+            <option value="{{ p.id }}" data-duration="{{ p.duration_minutes }}">
+              {{ p.procedure_name }} — {{ p.duration_display }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Ім'я клієнта <span class="form-label--optional">(необов'язково)</span></label>
+          <input class="form-input" type="text" name="client_name" id="field-client" placeholder="Введіть ім'я...">
+        </div>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" id="modal-cancel">Скасувати</button>
+          <button type="button" class="btn btn--danger" id="delete-btn" style="display: none">Видалити</button>
+          <button type="submit" class="btn btn--primary" id="modal-submit">Зберегти</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="confirm-overlay">
+    <div class="modal modal--confirm" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+      <div class="modal__header">
+        <h3 class="modal__title" id="confirm-title">Видалити запис?</h3>
+        <button class="modal__close" id="confirm-close" type="button" aria-label="Закрити">&times;</button>
+      </div>
+      <div class="modal__content">
+        <p class="modal__text">Цю дію не можна скасувати.</p>
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" id="confirm-cancel">Скасувати</button>
+          <button type="button" class="btn btn--danger" id="confirm-delete">Видалити</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <script>
+    const MASTERS = [
+      {% for master in masters %}
+      {
+        id: {{ master.id }},
+        name: "{{ master.get_full_name|default:master.username|escapejs }}",
+        initial: "{{ master.get_full_name|default:master.username|first|upper|escapejs }}",
+        isCurrentUser: {% if master == request.user %}true{% else %}false{% endif %},
+        photoUrl: {% if master.masterprofile.photo %}"{{ master.masterprofile.photo.url|escapejs }}"{% else %}null{% endif %}
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ];
+    const EDIT_URL = "{% url 'appointments:edit' 0 %}".replace('/0/', '/');
+    const DELETE_URL = "{% url 'appointments:delete' 0 %}".replace('/0/', '/');
+    const APPOINTMENTS_URL = "{% url 'appointments:appointments_api' %}";
+    const CURRENT_USER_ID = {{ request.user.id|default:"null" }};
+  </script>
+  <script src="{% static 'js/calendar.js' %}"></script>
+</body>
+</html>

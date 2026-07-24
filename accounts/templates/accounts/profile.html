@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Профіль — Салон</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+</head>
+<body>
+
+  <header class="header">
+    <div class="header__logo">
+      <span class="header__logo-icon">✦</span>
+      <span class="header__logo-text">Салон</span>
+    </div>
+    <nav class="header__nav">
+      <a href="{% url 'appointments:index' %}" class="btn-ghost">← Календар</a>
+      <form method="post" action="{% url 'accounts:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn--ghost">Вийти</button>
+      </form>
+    </nav>
+  </header>
+
+  <div class="profile-wrap">
+    <div class="profile-card">
+
+      <div class="profile-hero">
+        <div class="avatar-wrap" id="avatar-wrap">
+          {% if profile.photo %}
+            <img src="{{ profile.photo.url }}" alt="Фото" class="avatar-img" id="avatar-preview">
+          {% else %}
+            <div class="avatar-placeholder" id="avatar-placeholder">
+              {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+            </div>
+            <img src="" alt="" class="avatar-img" id="avatar-preview" style="display:none">
+          {% endif %}
+          <label class="avatar-edit" for="photo-input">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </label>
+        </div>
+
+        <div class="profile-info">
+          <h2 class="profile-name">{{ request.user.get_full_name|default:request.user.username }}</h2>
+          <p class="profile-username">@{{ request.user.username }}</p>
+          {% if request.user.email %}
+          <p class="profile-email">{{ request.user.email }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <form method="POST" enctype="multipart/form-data" class="profile-form">
+        {% csrf_token %}
+
+        {% if messages %}
+        <div class="auth-errors">
+          {% for message in messages %}
+          <p class="auth-error {% if message.tags == 'success' %}auth-success{% endif %}">
+            {{ message }}
+          </p>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if form.errors %}
+        <div class="auth-errors">
+          {% for field in form %}
+            {% for error in field.errors %}
+            <p class="auth-error">{{ error }}</p>
+            {% endfor %}
+          {% endfor %}
+          {% for error in form.non_field_errors %}
+          <p class="auth-error">{{ error }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <input type="file" name="photo" id="photo-input"
+          accept=".jpg,.jpeg,.png,.webp" style="display:none">
+
+        <div class="profile-fields">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Ім'я</label>
+              <input class="form-input" type="text" name="first_name"
+                value="{{ form.first_name.value|default:'' }}" placeholder="Ім'я">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Прізвище</label>
+              <input class="form-input" type="text" name="last_name"
+                value="{{ form.last_name.value|default:'' }}" placeholder="Прізвище">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" name="email"
+              value="{{ form.email.value|default:'' }}" placeholder="email@salon.com">
+          </div>
+        </div>
+
+        <div class="profile-actions">
+          <button type="submit" class="btn-auth">Зберегти зміни</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+  <script src="{% static 'js/profile.js' %}"></script>
+</body>
+</html>
