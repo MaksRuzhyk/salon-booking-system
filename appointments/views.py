@@ -38,7 +38,7 @@ def appointments_api(request):
     for appointment in appointments:
         events.append({
             'id': appointment.id,
-            'title': appointment.client_name or appointment.procedure.procedure_name,
+            'title': appointment.procedure.procedure_name,
             'start': f'{appointment.date}T{appointment.start_time}',
             'end': f'{appointment.date}T{appointment.end_time}',
             'extendedProps': {

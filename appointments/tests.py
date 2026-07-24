@@ -117,6 +117,11 @@ class AppointmentViewTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual([event['id'] for event in response.json()], [self.appointment.pk])
+        self.assertEqual(response.json()[0]['title'], self.procedure.procedure_name)
+        self.assertEqual(
+            response.json()[0]['extendedProps']['client_name'],
+            self.appointment.client_name,
+        )
 
     def test_mutating_endpoints_reject_get(self):
         urls = [
