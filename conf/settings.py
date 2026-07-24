@@ -90,7 +90,7 @@ DATABASES = {
         'HOST': config('DB_HOST'),
         'PORT': config('DB_PORT', cast=int),
         'OPTIONS': {
-            'sslmode': config('DB_SSLMODE', default='prefer'),
+            'sslmode': config('DB_SSLMODE', default='require'),
         },
         'CONN_MAX_AGE': config('DB_CONN_MAX_AGE', default=60, cast=int),
 
