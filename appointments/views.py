@@ -8,6 +8,14 @@ from .models import Appointment, Procedure
 from .forms import AppointmentForm
 
 
+def parse_required_datetime(value: str):
+    if not value:
+        return None
+    try:
+        return parse_datetime(value)
+    except ValueError:
+        return None
+
 @login_required
 def index(request):
     masters = User.objects.filter(is_active=True, is_superuser=False)
@@ -20,19 +28,29 @@ def index(request):
     })
 
 @login_required
-
 def appointments_api(request):
+    start = parse_required_datetime(request.GET.get('start'))
+    end = parse_required_datetime(request.GET.get('end'))
+    if start is None or end is None:
+        return JsonResponse({
+            'error': "Параметри start і end обов'язкові у форматі YYYY-MM-DD",
+        }, status=400)
+
+    appointments = (
+        Appointment.objects.select_related('procedure', 'master').filter
+        (master__is_active=True, master__is_superuser=False,
+        date__gte=start.date(), date__lt=end.date())
+    )
+
     master_id = request.GET.get('master_id')
-    start = parse_datetime(request.GET.get('start'))
-    end = parse_datetime(request.GET.get('end'))
-
-    appointments = Appointment.objects.select_related('procedure', 'master').filter(master__is_active=True, master__is_superuser=False)
-
     if master_id:
+        try:
+            master_id = int(master_id)
+        except ValueError:
+            return JsonResponse({
+                'error': "master id must be an integer",
+            }, status=400)
         appointments = appointments.filter(master_id=master_id)
-
-    if start and end:
-        appointments = appointments.filter(date__gte=start.date(), date__lt=end.date())
 
     events = []
     for appointment in appointments:

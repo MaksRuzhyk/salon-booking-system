@@ -168,10 +168,9 @@ class ProfilePhotoTests(TestCase):
         self.assertTrue(storage.exists(profile.photo.name))
 
     def test_deleting_profile_deletes_photo_file(self):
-        profile = MasterProfile.objects.create(
-            user=self.user,
-            photo=make_image_upload('delete-me.png'),
-        )
+        profile = self.user.masterprofile
+        profile.photo = make_image_upload('delete-me.png')
+        profile.save()
         photo_name = profile.photo.name
         storage = profile.photo.storage
         self.assertTrue(storage.exists(photo_name))
