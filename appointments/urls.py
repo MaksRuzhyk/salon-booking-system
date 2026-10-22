@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import *
+from .views import index, appointments_api, add_appointment, delete_appointment, edit_appointment
 app_name = 'appointments'
 
 urlpatterns = [
