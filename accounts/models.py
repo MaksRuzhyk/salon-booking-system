@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
 
@@ -27,8 +27,14 @@ class MasterProfile(models.Model):
     def __str__(self):
         return self.user.username
 
-
+    class Meta:
+        verbose_name = 'Профіль майстра'
+        verbose_name_plural = 'Профілі майстрів'
 @receiver(post_delete, sender=MasterProfile)
 def delete_profile_photo(sender, instance, **kwargs):
     if instance.photo:
         instance.photo.delete(save=False)
+@receiver(post_save, sender=User)
+def create_master_profile(sender, instance, created, **kwargs):
+    if created:
+        MasterProfile.objects.get_or_create(user=instance)
