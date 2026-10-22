@@ -65,6 +65,25 @@ class AuthenticationViewTests(TestCase):
         self.assertRedirects(response, reverse('accounts:login'))
         self.assertNotIn('_auth_user_id', self.client.session)
 
+    def test_login_redirects_to_safe_next_url(self):
+        User.objects.create_user(username='master', password='test-pass-123')
+
+        response = self.client.post(
+            reverse('accounts:login') + '?next=' + reverse('accounts:profile'),
+            {'username': 'master', 'password': 'test-pass-123'},
+        )
+
+        self.assertRedirects(response, reverse('accounts:profile'))
+
+    def test_login_ignores_external_next_url(self):
+        User.objects.create_user(username='master', password='test-pass-123')
+
+        response = self.client.post(
+            reverse('accounts:login') + '?next=https://evil.example.com/',
+            {'username': 'master', 'password': 'test-pass-123'},
+        )
+
+        self.assertRedirects(response, reverse('appointments:index'))
 
 class ProfileFormTests(TestCase):
     def setUp(self):

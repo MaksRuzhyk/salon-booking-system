@@ -133,3 +133,63 @@ class AppointmentViewTests(TestCase):
         for url in urls:
             with self.subTest(url=url):
                 self.assertEqual(self.client.get(url).status_code, 405)
+
+    def test_api_requires_start_and_end(self):
+        response = self.client.get(reverse('appointments:appointments_api'))
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('error', response.json())
+
+    def test_api_rejects_invalid_dates(self):
+        cases = [
+            {'start': 'not-a-date', 'end': '2026-07-23T00:00:00'},
+            {'start': '2026-02-30T00:00:00', 'end': '2026-03-01T00:00:00'},
+        ]
+        for params in cases:
+            with self.subTest(params=params):
+                response = self.client.get(
+                    reverse('appointments:appointments_api'), params
+                )
+                self.assertEqual(response.status_code, 400)
+
+    def test_api_rejects_non_numeric_master_id(self):
+        response = self.client.get(
+            reverse('appointments:appointments_api'),
+            {
+                'start': '2026-07-22T00:00:00',
+                'end': '2026-07-23T00:00:00',
+                'master_id': 'abc',
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_api_filters_by_master_id(self):
+        other_master = User.objects.create_user(username='other', password='test-pass-123')
+        Appointment.objects.create(
+            master=other_master,
+            date=date(2026, 7, 22),
+            start_time=time(14, 0),
+            end_time=time(15, 0),
+            procedure=self.procedure,
+        )
+
+        response = self.client.get(
+            reverse('appointments:appointments_api'),
+            {
+                'start': '2026-07-22T00:00:00',
+                'end': '2026-07-23T00:00:00',
+                'master_id': self.master.pk,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([event['id'] for event in response.json()], [self.appointment.pk])
+
+class ProcedureModelTests(TestCase):
+    def test_duration_display(self):
+        cases = [(45, '45хв'), (60, '01:00'), (90, '01:30')]
+        for minutes, expected in cases:
+            with self.subTest(minutes=minutes):
+                procedure = Procedure(procedure_name='Test', duration_minutes=minutes)
+                self.assertEqual(procedure.duration_display, expected)
