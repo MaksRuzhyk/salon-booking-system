@@ -1,29 +1,28 @@
-from django.db import models
-from django.contrib.auth.models import User
 from datetime import datetime
+from django.db import models
+from django.core.validators import MinValueValidator
+from django.contrib.auth.models import User
+
 
 class Procedure(models.Model):
     procedure_name = models.CharField(max_length=255, verbose_name='Назва процедури')
-    duration_minutes = models.IntegerField(verbose_name='Тривалість процедури у хвилинах')
-
+    duration_minutes = models.PositiveIntegerField(validators=[MinValueValidator(1)],
+                                                   verbose_name='Тривалість процедури у хвилинах')
 
     @property
     def duration_display(self):
-        hours = self.duration_minutes // 60
-        minutes = self.duration_minutes % 60
-        if hours and minutes:
+        hours, minutes = divmod(self.duration_minutes, 60)
+        if hours:
             return f'{hours:02d}:{minutes:02d}'
-        elif hours:
-            return f'{hours:02d}:{minutes:02d}'
-        else:
-            return f'{minutes:02d}хв'
+        return f'{minutes:02d}хв'
 
     def __str__(self):
-        return f'{self.procedure_name}'
+        return self.procedure_name
 
     class Meta:
         verbose_name_plural = 'Процедури'
         verbose_name = 'Процедура'
+        ordering = ['procedure_name']
 
 class Appointment(models.Model):
     master = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Майстер')
@@ -42,8 +41,12 @@ class Appointment(models.Model):
         return end - start
 
     def __str__(self):
-        return f'{self.procedure}'
+        return str(self.procedure)
 
     class Meta:
         verbose_name_plural = 'Записи'
         verbose_name = 'Запис'
+        ordering = ['date', 'start_time']
+        indexes = [
+            models.Index(fields=['master', 'date'], name='appointment_master_date_index'),
+        ]
