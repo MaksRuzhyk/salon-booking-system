@@ -2,91 +2,120 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Реєстрація — Салон</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/base.css' %}">
-  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Реєстрація — Салон</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@600;700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 </head>
 <body>
-  <div class="auth-wrap">
+<div class="auth-wrap">
     <div class="auth-card">
 
-      <div class="auth-header">
-        <span class="auth-logo">✦</span>
-        <h1 class="auth-title">Створити акаунт</h1>
-        <p class="auth-subtitle">Заповніть форму щоб приєднатись</p>
-      </div>
-
-      <form method="POST" class="auth-form">
-        {% csrf_token %}
-
-        {% if form.errors %}
-        <div class="auth-errors">
-          {% for field in form %}
-            {% for error in field.errors %}
-            <p class="auth-error">{{ error }}</p>
-            {% endfor %}
-          {% endfor %}
-          {% for error in form.non_field_errors %}
-          <p class="auth-error">{{ error }}</p>
-          {% endfor %}
-        </div>
-        {% endif %}
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Ім'я</label>
-            <input class="form-input" type="text" name="first_name"
-              value="{{ form.first_name.value|default:'' }}"
-              placeholder="Гомер" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Прізвище</label>
-            <input class="form-input" type="text" name="last_name"
-              value="{{ form.last_name.value|default:'' }}"
-              placeholder="Сімпсон" required>
-          </div>
+        <div class="auth-header">
+            <span class="auth-logo">✦</span>
+            <h1 class="auth-title">Створити акаунт</h1>
+            <p class="auth-subtitle">Заповніть форму щоб приєднатись</p>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">Логін</label>
-          <input class="form-input" type="text" name="username"
-            value="{{ form.username.value|default:'' }}"
-            placeholder="homer_simpson" required>
+        <form method="POST" class="auth-form">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="auth-errors">
+                {% for field in form %}
+                {% for error in field.errors %}
+                <p class="auth-error">{{ error }}</p>
+                {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                <p class="auth-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Ім'я</label>
+                    <input class="form-input" type="text" name="first_name"
+                           value="{{ form.first_name.value|default:'' }}"
+                           placeholder="Гомер" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Прізвище</label>
+                    <input class="form-input" type="text" name="last_name"
+                           value="{{ form.last_name.value|default:'' }}"
+                           placeholder="Сімпсон" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Логін</label>
+                <input class="form-input" type="text" name="username"
+                       value="{{ form.username.value|default:'' }}"
+                       placeholder="homer_simpson" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input class="form-input" type="email" name="email"
+                       value="{{ form.email.value|default:'' }}"
+                       placeholder="h_simpson@gmail.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Пароль</label>
+                <div class="input-wrap">
+                    <input class="form-input" type="password" name="password1"
+                           id="password1-input" placeholder="Мінімум 8 символів" required>
+                    <button type="button" class="input-eye" data-toggle-password="password1-input"
+                            aria-label="Показати пароль">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Підтвердження пароля</label>
+                <div class="input-wrap">
+                    <input class="form-input" type="password" name="password2"
+                           id="password2-input" placeholder="Повторіть пароль" required>
+                    <button type="button" class="input-eye" data-toggle-password="password2-input"
+                            aria-label="Показати пароль">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-auth">Зареєструватись</button>
+
+        </form>
+
+        <div class="auth-footer">
+            Вже маєш акаунт?
+            <a href="{% url 'accounts:login' %}" class="auth-link">Увійти</a>
         </div>
-
-        <div class="form-group">
-          <label class="form-label">Email <span class="form-label--optional">(необов'язково)</span></label>
-          <input class="form-input" type="email" name="email"
-            value="{{ form.email.value|default:'' }}"
-            placeholder="h_simpson@gmail.com">
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Пароль</label>
-          <input class="form-input" type="password" name="password1"
-            placeholder="Мінімум 8 символів" required>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Підтвердження пароля</label>
-          <input class="form-input" type="password" name="password2"
-            placeholder="Повторіть пароль" required>
-        </div>
-
-        <button type="submit" class="btn-auth">Зареєструватись</button>
-
-      </form>
-
-      <div class="auth-footer">
-        Вже маєш акаунт?
-        <a href="{% url 'accounts:login' %}" class="auth-link">Увійти</a>
-      </div>
 
     </div>
-  </div>
+</div>
+<script>
+    document.querySelectorAll('[data-toggle-password]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const input = document.getElementById(button.dataset.togglePassword);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        });
+    });
+</script>
 </body>
 </html>
