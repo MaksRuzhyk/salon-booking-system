@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 from decouple import Csv, config
-
+from django.conf.global_settings import LOGGING
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -184,3 +184,19 @@ SECURE_HSTS_PRELOAD = config(
   default=False,
   cast=bool,
 )
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        'django':{
+            'handlers': ['console'],
+            'level': 'INFO',
+        }
+    }
+}
