@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
+from django.utils.translation import gettext_lazy as _
 
 
 class RegisterForm(UserCreationForm):
@@ -17,7 +18,7 @@ class RegisterForm(UserCreationForm):
         email = self.cleaned_data['email'].strip().lower()
         if User.objects.filter(email__iexact=email).exists():
             raise forms.ValidationError(
-                'Користувач із такою електронною адресою вже існує.'
+                _('A user with this email already exists.')
             )
 
         return email
@@ -43,7 +44,7 @@ class ProfileForm(forms.ModelForm):
 
         if duplicate.exists():
             raise forms.ValidationError(
-                'Ця електронна адреса вже використовується.'
+                _('This email address is already in use.')
             )
 
         return email
@@ -53,7 +54,7 @@ class ProfileForm(forms.ModelForm):
 
         if photo and photo.size > 5 * 1024 * 1024:
             raise forms.ValidationError(
-                'Розмір фотографії не повинен перевищувати 5 МБ.'
+                _('The photo must not exceed 5MB.')
             )
 
         return photo

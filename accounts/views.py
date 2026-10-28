@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from .forms import RegisterForm, ProfileForm
 from .models import MasterProfile
+from django.utils.translation import gettext_lazy as _
+
 
 
 def register_view(request):
@@ -17,7 +19,7 @@ def register_view(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            messages.success(request, 'Заявку створено. Очікуйте підтвердження адміністратора.')
+            messages.success(request, _('Your request has been submitted. Please wait for administrator approval'))
             return redirect('accounts:login')
     else:
         form = RegisterForm()
@@ -65,7 +67,7 @@ def profile_view(request):
                 profile.photo = photo
                 profile.save()
 
-            messages.success(request, 'Профіль успішно оновлено.')
+            messages.success(request, _('Your profile was successfully updated'))
             return redirect('accounts:profile')
     else:
         form = ProfileForm(instance=request.user)

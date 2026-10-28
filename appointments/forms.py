@@ -2,6 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from .models import Appointment
+from django.utils.translation import gettext_lazy as _
 
 class AppointmentForm(forms.ModelForm):
     start_time = forms.TimeField(widget=forms.TimeInput(format='%H:%M', attrs={'type': 'time'}))
@@ -25,7 +26,7 @@ class AppointmentForm(forms.ModelForm):
         if start_time and end_time and end_time <= start_time:
             self.add_error(
                 'end_time',
-                'Час завершення повинен бути пізніше часу початку.',
+                _('End time must be later than start time.'),
             )
             return cleaned_data
 
@@ -43,7 +44,7 @@ class AppointmentForm(forms.ModelForm):
             if overlapping.exists():
                 self.add_error(
                     'start_time',
-                    'У цього майстра вже є запис на вибраний час.',
+                    _('This master already has an appointment at the selected time.'),
                 )
 
         return cleaned_data

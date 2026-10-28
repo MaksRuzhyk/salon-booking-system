@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
-
+from django.utils.translation import gettext_lazy as _
 
 class MasterProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -28,8 +28,8 @@ class MasterProfile(models.Model):
         return self.user.username
 
     class Meta:
-        verbose_name = 'Профіль майстра'
-        verbose_name_plural = 'Профілі майстрів'
+        verbose_name = _('master profile')
+        verbose_name_plural = _('master profiles')
 @receiver(post_delete, sender=MasterProfile)
 def delete_profile_photo(sender, instance, **kwargs):
     if instance.photo:

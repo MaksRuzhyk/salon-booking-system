@@ -1,10 +1,11 @@
+{% load static i18n %}
 <!DOCTYPE html>
-{% load static %}
-<html lang="uk">
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mani V Kato — Календар</title>
+  <title>Mani V Kato — {% translate "Calendar" %}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Syne:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
@@ -19,23 +20,23 @@
     </div>
     <nav class="header__nav">
       <span class="header__user">{{ request.user.get_full_name|default:request.user.username }}</span>
-      <a href="{% url 'accounts:profile' %}" class="btn btn--ghost">Профіль</a>
+      <a href="{% url 'accounts:profile' %}" class="btn btn--ghost">{% translate "Profile" %}</a>
       <form method="post" action="{% url 'accounts:logout' %}">
         {% csrf_token %}
-        <button type="submit" class="btn btn--ghost">Вийти</button>
+        <button type="submit" class="btn btn--ghost">{% translate "Log out" %}</button>
       </form>
     </nav>
   </header>
 
   <div class="toolbar">
     <div class="toolbar__right">
-      <button class="btn btn--primary" id="add-btn">+ Новий запис</button>
+      <button class="btn btn--primary" id="add-btn">+ {% translate "New appointment" %}</button>
     </div>
   </div>
 
   <main class="main">
-    <section class="calendar-panel" aria-label="Спільний календар майстрів">
-      <div class="calendar-status" id="calendar-status" role="status">Завантаження записів...</div>
+    <section class="calendar-panel" aria-label="{% translate 'Shared masters calendar' %}">
+      <div class="calendar-status" id="calendar-status" role="status">{% translate "Loading appointments..." %}</div>
       <div class="shared-calendar" id="shared-calendar">
         <div class="shared-calendar__top" id="calendar-top"></div>
         <div class="shared-calendar__body" id="calendar-body"></div>
@@ -46,15 +47,15 @@
   <div class="modal-overlay" id="modal-overlay">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div class="modal__header">
-        <h3 class="modal__title" id="modal-title">Новий запис</h3>
-        <button class="modal__close" id="modal-close" type="button" aria-label="Закрити">&times;</button>
+        <h3 class="modal__title" id="modal-title">{% translate "New appointment" %}</h3>
+        <button class="modal__close" id="modal-close" type="button" aria-label="{% translate 'Close' %}">&times;</button>
       </div>
       <form class="modal__form" id="appointment-form" method="POST" action="{% url 'appointments:add' %}">
         {% csrf_token %}
         <input type="hidden" name="appointment_id" id="field-appointment-id">
 
         <div class="form-group">
-          <label class="form-label">Майстер</label>
+          <label class="form-label">{% translate "Master" %}</label>
           <select class="form-input form-select" name="master" id="field-master" required>
             {% for master in masters %}
             <option value="{{ master.id }}">{{ master.get_full_name|default:master.username }}</option>
@@ -63,25 +64,25 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Дата</label>
+          <label class="form-label">{% translate "Date" %}</label>
           <input class="form-input" type="date" name="date" id="field-date" required>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Початок</label>
+            <label class="form-label">{% translate "Start" %}</label>
             <input class="form-input" type="time" name="start_time" id="field-start" required>
           </div>
           <div class="form-group">
-            <label class="form-label">Кінець</label>
+            <label class="form-label">{% translate "End" %}</label>
             <input class="form-input" type="time" name="end_time" id="field-end" required>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Процедура</label>
+          <label class="form-label">{% translate "Procedure" %}</label>
           <select class="form-input form-select" name="procedure" id="field-procedure" required>
-            <option value="">— оберіть процедуру —</option>
+            <option value="">— {% translate "select a procedure" %} —</option>
             {% for p in procedures %}
             <option value="{{ p.id }}" data-duration="{{ p.duration_minutes }}">
               {{ p.procedure_name }} — {{ p.duration_display }}
@@ -91,14 +92,14 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Ім'я клієнта <span class="form-label--optional">(необов'язково)</span></label>
-          <input class="form-input" type="text" name="client_name" id="field-client" placeholder="Введіть ім'я...">
+          <label class="form-label">{% translate "Client name" %} <span class="form-label--optional">({% translate "optional" %})</span></label>
+          <input class="form-input" type="text" name="client_name" id="field-client" placeholder="{% translate 'Enter a name...' %}">
         </div>
 
         <div class="modal__actions">
-          <button type="button" class="btn btn--ghost" id="modal-cancel">Скасувати</button>
-          <button type="button" class="btn btn--danger" id="delete-btn" style="display: none">Видалити</button>
-          <button type="submit" class="btn btn--primary" id="modal-submit">Зберегти</button>
+          <button type="button" class="btn btn--ghost" id="modal-cancel">{% translate "Cancel" %}</button>
+          <button type="button" class="btn btn--danger" id="delete-btn" style="display: none">{% translate "Delete" %}</button>
+          <button type="submit" class="btn btn--primary" id="modal-submit">{% translate "Save" %}</button>
         </div>
       </form>
     </div>
@@ -107,14 +108,14 @@
   <div class="modal-overlay" id="confirm-overlay">
     <div class="modal modal--confirm" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
       <div class="modal__header">
-        <h3 class="modal__title" id="confirm-title">Видалити запис?</h3>
-        <button class="modal__close" id="confirm-close" type="button" aria-label="Закрити">&times;</button>
+        <h3 class="modal__title" id="confirm-title">{% translate "Delete appointment?" %}</h3>
+        <button class="modal__close" id="confirm-close" type="button" aria-label="{% translate 'Close' %}">&times;</button>
       </div>
       <div class="modal__content">
-        <p class="modal__text">Цю дію не можна скасувати.</p>
+        <p class="modal__text">{% translate "This action cannot be undone." %}</p>
         <div class="modal__actions">
-          <button type="button" class="btn btn--ghost" id="confirm-cancel">Скасувати</button>
-          <button type="button" class="btn btn--danger" id="confirm-delete">Видалити</button>
+          <button type="button" class="btn btn--ghost" id="confirm-cancel">{% translate "Cancel" %}</button>
+          <button type="button" class="btn btn--danger" id="confirm-delete">{% translate "Delete" %}</button>
         </div>
       </div>
     </div>

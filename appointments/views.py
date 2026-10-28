@@ -33,7 +33,7 @@ def appointments_api(request):
     end = parse_required_datetime(request.GET.get('end'))
     if start is None or end is None:
         return JsonResponse({
-            'error': "Параметри start і end обов'язкові у форматі YYYY-MM-DD",
+            'error': "Parameters start and end are required in format YYYY-MM-DD",
         }, status=400)
 
     appointments = (

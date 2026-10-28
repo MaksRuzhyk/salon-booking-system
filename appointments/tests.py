@@ -188,7 +188,7 @@ class AppointmentViewTests(TestCase):
 
 class ProcedureModelTests(TestCase):
     def test_duration_display(self):
-        cases = [(45, '45хв'), (60, '01:00'), (90, '01:30')]
+        cases = [(45, '45 min'), (60, '01:00'), (90, '01:30')]
         for minutes, expected in cases:
             with self.subTest(minutes=minutes):
                 procedure = Procedure(procedure_name='Test', duration_minutes=minutes)
