@@ -12,9 +12,12 @@ class AppointmentForm(forms.ModelForm):
         model = Appointment
         fields = '__all__'
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, user=None, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['master'].queryset = User.objects.filter(is_active=True, is_superuser=False)
+        masters = User.objects.filter(is_active=True, is_superuser=False)
+        if user is not None and not user.is_staff:
+            masters = masters.filter(pk=user.pk)
+        self.fields['master'].queryset = masters
 
     def clean(self):
         cleaned_data = super().clean()

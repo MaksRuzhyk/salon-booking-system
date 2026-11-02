@@ -186,6 +186,86 @@ class AppointmentViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual([event['id'] for event in response.json()], [self.appointment.pk])
 
+    def other_master_appointment(self):
+        other = User.objects.create_user(username='other', password='test-pass-123')
+        return Appointment.objects.create(
+            master=other,
+            date=date(2026, 7, 22),
+            start_time=time(15, 0),
+            end_time=time(16, 0),
+            procedure=self.procedure,
+        )
+
+    def test_master_sees_only_own_appointments_in_api(self):
+        self.other_master_appointment()
+
+        response = self.client.get(
+            reverse('appointments:appointments_api'),
+            {'start': '2026-07-22T00:00:00', 'end': '2026-07-23T00:00:00'},
+        )
+
+        self.assertEqual([event['id'] for event in response.json()], [self.appointment.pk])
+
+    def test_staff_sees_all_masters(self):
+        other = self.other_master_appointment().master
+        self.client.force_login(self.superuser)
+
+        response = self.client.get(reverse('appointments:index'))
+
+        self.assertQuerySetEqual(
+            response.context['masters'], [self.master, other], ordered=False
+        )
+
+    def test_master_cannot_edit_other_masters_appointment(self):
+        appointment = self.other_master_appointment()
+
+        response = self.client.post(
+            reverse('appointments:edit', args=[appointment.pk]),
+            {'client_name': 'Hacked'},
+        )
+
+        self.assertEqual(response.status_code, 403)
+        appointment.refresh_from_db()
+        self.assertEqual(appointment.client_name, '')
+
+    def test_master_cannot_delete_other_masters_appointment(self):
+        appointment = self.other_master_appointment()
+
+        response = self.client.post(reverse('appointments:delete', args=[appointment.pk]))
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(Appointment.objects.filter(pk=appointment.pk).exists())
+
+    def test_master_cannot_create_appointment_for_other_master(self):
+        other = User.objects.create_user(username='other', password='test-pass-123')
+
+        response = self.client.post(reverse('appointments:add'), {
+            'master': other.pk,
+            'date': '2026-07-23',
+            'start_time': '10:00',
+            'end_time': '11:00',
+            'procedure': self.procedure.pk,
+        })
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn('master', response.json()['errors'])
+
+    def test_master_can_delete_own_appointment(self):
+        response = self.client.post(reverse('appointments:delete', args=[self.appointment.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Appointment.objects.filter(pk=self.appointment.pk).exists())
+
+    def test_staff_can_delete_any_appointment(self):
+        appointment = self.other_master_appointment()
+        self.client.force_login(self.superuser)
+
+        response = self.client.post(reverse('appointments:delete', args=[appointment.pk]))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Appointment.objects.filter(pk=appointment.pk).exists())
+
+
 class ProcedureModelTests(TestCase):
     def test_duration_display(self):
         cases = [(45, '45 min'), (60, '01:00'), (90, '01:30')]

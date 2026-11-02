@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from .models import Appointment, Procedure
 from .forms import AppointmentForm
+from django.utils.translation import gettext as _
 
 
 def parse_required_datetime(value: str):
@@ -16,9 +17,19 @@ def parse_required_datetime(value: str):
     except ValueError:
         return None
 
+def can_manage(user, appointment):
+    return user.is_staff or appointment.master_id == user.pk
+def forbidden():
+    return JsonResponse({
+        'success': False, 'error': _('You can only manage your own appointments.'),
+    }, status=403)
+
+
 @login_required
 def index(request):
     masters = User.objects.filter(is_active=True, is_superuser=False)
+    if not request.user.is_staff:
+        masters = masters.filter(pk=request.user.pk)
     procedures = Procedure.objects.all()
 
 
@@ -41,7 +52,8 @@ def appointments_api(request):
         (master__is_active=True, master__is_superuser=False,
         date__gte=start.date(), date__lt=end.date())
     )
-
+    if not request.user.is_staff:
+        appointments = appointments.filter(master=request.user)
     master_id = request.GET.get('master_id')
     if master_id:
         try:
@@ -71,7 +83,7 @@ def appointments_api(request):
 @login_required
 @require_POST
 def add_appointment(request):
-    form = AppointmentForm(request.POST)
+    form = AppointmentForm(request.POST, user=request.user)
     if form.is_valid():
         appointment = form.save()
         return JsonResponse({
@@ -85,6 +97,8 @@ def add_appointment(request):
 @require_POST
 def delete_appointment(request, appointment_id):
     appointment = get_object_or_404(Appointment, pk=appointment_id)
+    if not can_manage(request.user, appointment):
+        return forbidden()
     appointment.delete()
     return JsonResponse({'success': True})
 
@@ -92,6 +106,8 @@ def delete_appointment(request, appointment_id):
 @require_POST
 def edit_appointment(request, appointment_id):
     appointment = get_object_or_404(Appointment, pk=appointment_id)
+    if not can_manage(request.user, appointment):
+        return forbidden()
     form = AppointmentForm(request.POST, instance=appointment)
     if form.is_valid():
         form.save()
