@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
       const dayHeader = createEl('div', 'calendar-day-header' + (isToday(day) ? ' today' : ''));
       const title = createEl('div', 'calendar-day-title calendar-day-title--nav');
       const dateNav = createEl('div', 'date-nav');
-      dateNav.setAttribute('aria-label', 'Навігація по днях');
+      dateNav.setAttribute('aria-label', gettext('Day navigation'));
       renderDateNav(dateNav);
       title.appendChild(dateNav);
       dayHeader.appendChild(title);
@@ -122,13 +122,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const info = createEl('div', 'master-info');
     info.appendChild(createEl('span', 'master-name', master.name));
-    info.appendChild(createEl('span', 'master-role', 'Майстер'));
+    info.appendChild(createEl('span', 'master-role', gettext('Master')));
 
     header.appendChild(avatar);
     header.appendChild(info);
 
     if (master.isCurrentUser) {
-      header.appendChild(createEl('span', 'master-badge', 'Ви'));
+      header.appendChild(createEl('span', 'master-badge', gettext('You')));
     }
 
     return header;
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
     clearEvents();
 
     if (!MASTERS.length) {
-      setStatus('Немає майстрів для відображення календаря.', 'empty');
+      setStatus(gettext('No masters to display in the calendar'), 'empty');
       return;
     }
 
@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    setStatus('Завантаження записів...');
+    setStatus(gettext('Loading appointments...'));
     const start = toDateInput(days[0]) + 'T00:00:00';
     const lastDay = days[days.length - 1];
     const endDate = new Date(lastDay);
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     fetch(url)
       .then(function (response) {
-        if (!response.ok) throw new Error('Не вдалося завантажити записи.');
+        if (!response.ok) throw new Error(gettext('Failed to load appointments.'));
         return response.json();
       })
       .then(function (events) {
@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(function () {
         state.events = [];
         clearEvents();
-        setStatus('Не вдалося завантажити записи. Оновіть сторінку або спробуйте пізніше.', 'error');
+        setStatus(gettext('Failed to load appointments. Refresh the page or try again later.'), 'error');
       });
   }
 
@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function () {
     opts = opts || {};
     state.editingId = opts.id || null;
 
-    document.getElementById('modal-title').textContent = opts.isEdit ? 'Редагувати запис' : 'Новий запис';
+    document.getElementById('modal-title').textContent = opts.isEdit ? gettext('Edit appointment') : gettext('New appointment');
     document.getElementById('field-appointment-id').value = opts.id || '';
     document.getElementById('field-master').value = opts.masterId || CURRENT_USER_ID || (MASTERS[0] && MASTERS[0].id) || '';
     document.getElementById('field-date').value = opts.date || toDateInput(new Date());
@@ -356,11 +356,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!data.success) throw new Error('delete failed');
         closeConfirm();
         closeModal();
-        showToast('Запис видалено.', 'success');
+        showToast(gettext('Appointment deleted.'), 'success');
         loadEvents(viewDays());
       })
       .catch(function () {
-        showToast('Не вдалося видалити запис.', 'error');
+        showToast(gettext('Failed to delete appointment.'), 'error');
       });
   }
 
@@ -388,7 +388,7 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .then(function () {
         closeModal();
-        showToast(appointmentId ? 'Запис оновлено.' : 'Запис створено.', 'success');
+        showToast(appointmentId ? gettext('Appointment updated.') : gettext('Appointment created.'), 'success');
         loadEvents(viewDays());
       })
       .catch(function (payload) {
@@ -425,15 +425,15 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function formErrorMessage(payload) {
-    if (!payload) return 'Не вдалося зберегти запис.';
+    if (!payload) return gettext('Failed to save appointment.');
     if (payload.error) return payload.error;
     if (payload.errors) {
       const firstKey = Object.keys(payload.errors)[0];
       const firstValue = payload.errors[firstKey];
       if (Array.isArray(firstValue) && firstValue.length) return firstValue[0];
-      return 'Перевірте поля форми.';
+      return gettext('Please check the forms fields');
     }
-    return 'Не вдалося зберегти запис.';
+    return gettext('Failed to save appointment.');
   }
 
 
@@ -458,19 +458,19 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function formatWeekday(date) {
-    return new Intl.DateTimeFormat('uk', { weekday: 'short' }).format(date);
+    return new Intl.DateTimeFormat(LANG, { weekday: 'short' }).format(date);
   }
 
   function formatDayDate(date) {
-    return new Intl.DateTimeFormat('uk', { day: 'numeric', month: 'short' }).format(date);
+    return new Intl.DateTimeFormat(LANG, { day: 'numeric', month: 'short' }).format(date);
   }
 
   function formatDayMonth(date) {
-    return new Intl.DateTimeFormat('uk', { day: 'numeric', month: 'long' }).format(date);
+    return new Intl.DateTimeFormat(LANG, { day: 'numeric', month: 'long' }).format(date);
   }
 
   function formatLongDate(date) {
-    return new Intl.DateTimeFormat('uk', { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
+    return new Intl.DateTimeFormat(LANG, { day: 'numeric', month: 'long', year: 'numeric' }).format(date);
   }
 
   function timeToMinutes(value) {

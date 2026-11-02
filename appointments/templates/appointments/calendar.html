@@ -139,7 +139,9 @@
     const DELETE_URL = "{% url 'appointments:delete' 0 %}".replace('/0/', '/');
     const APPOINTMENTS_URL = "{% url 'appointments:appointments_api' %}";
     const CURRENT_USER_ID = {{ request.user.id|default:"null" }};
+    const LANG = "{{ LANGUAGE_CODE }}";
   </script>
+  <script src="{% url 'javascript-catalog' %}"></script>
   <script src="{% static 'js/calendar.js' %}"></script>
 </body>
 </html>
