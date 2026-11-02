@@ -128,7 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en'
 LANGUAGES = [
     ('en', _('English')),
-    ('uk', _('Ukraine')),
+    ('uk', _('Ukrainian')),
 ]
 
 LOCALE_PATHS = [BASE_DIR / 'locale']

@@ -1,0 +1,305 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-02 11:17+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Ukrainian\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != "
+"11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % "
+"100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || "
+"(n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+#: accounts/apps.py:7
+msgid "Accounts"
+msgstr "Акаунти"
+
+#: accounts/forms.py:21
+msgid "A user with this email already exists."
+msgstr "Користувач із такою електронною адресою вже існує."
+
+#: accounts/forms.py:47
+msgid "This email address is already in use."
+msgstr "Ця електронна адреса вже використовується."
+
+#: accounts/forms.py:57
+msgid "The photo must not exceed 5MB."
+msgstr "Розмір фотографії не повинен перевищувати 5 МБ."
+
+#: accounts/models.py:31
+msgid "master profile"
+msgstr "профіль майстра"
+
+#: accounts/models.py:32
+msgid "master profiles"
+msgstr "профілі майстрів"
+
+#: accounts/templates/accounts/login.html:8
+#: accounts/templates/accounts/login.html:20
+#: accounts/templates/accounts/login.html:70
+#: accounts/templates/accounts/register.html:108
+msgid "Log in"
+msgstr "Увійти"
+
+#: accounts/templates/accounts/login.html:21
+msgid "Enter your credentials to sign in"
+msgstr "Введіть дані для входу в систему"
+
+#: accounts/templates/accounts/login.html:50
+#: accounts/templates/accounts/register.html:57
+msgid "Username"
+msgstr "Логін"
+
+#: accounts/templates/accounts/login.html:57
+#: accounts/templates/accounts/register.html:71
+msgid "Password"
+msgstr "Пароль"
+
+#: accounts/templates/accounts/login.html:61
+#: accounts/templates/accounts/register.html:76
+#: accounts/templates/accounts/register.html:92
+msgid "Show password"
+msgstr "Показати пароль"
+
+#: accounts/templates/accounts/login.html:75
+msgid "Don't have an account?"
+msgstr "Немає акаунту?"
+
+#: accounts/templates/accounts/login.html:76
+#: accounts/templates/accounts/register.html:8
+#: accounts/templates/accounts/register.html:102
+msgid "Sign up"
+msgstr "Зареєструватися"
+
+#: accounts/templates/accounts/profile.html:8
+#: appointments/templates/appointments/calendar.html:23
+msgid "Profile"
+msgstr "Профіль"
+
+#: accounts/templates/accounts/profile.html:22
+#: appointments/templates/appointments/calendar.html:8
+msgid "Calendar"
+msgstr "Календар"
+
+#: accounts/templates/accounts/profile.html:25
+#: appointments/templates/appointments/calendar.html:26
+msgid "Log out"
+msgstr "Вийти"
+
+#: accounts/templates/accounts/profile.html:36
+msgid "Photo"
+msgstr "Фото"
+
+#: accounts/templates/accounts/profile.html:43
+msgid "Change photo"
+msgstr "Змінити фото"
+
+#: accounts/templates/accounts/profile.html:91
+#: accounts/templates/accounts/profile.html:93
+#: accounts/templates/accounts/register.html:43
+msgid "First name"
+msgstr "Ім'я"
+
+#: accounts/templates/accounts/profile.html:96
+#: accounts/templates/accounts/profile.html:98
+#: accounts/templates/accounts/register.html:49
+msgid "Last name"
+msgstr "Прізвище"
+
+#: accounts/templates/accounts/profile.html:110
+msgid "Save changes"
+msgstr "Зберегти зміни"
+
+#: accounts/templates/accounts/register.html:21
+msgid "Create an account"
+msgstr "Створити акаунт"
+
+#: accounts/templates/accounts/register.html:22
+msgid "Fill in the form to join"
+msgstr "Заповніть форму, щоб приєднатися"
+
+#: accounts/templates/accounts/register.html:74
+msgid "At least 8 characters"
+msgstr "Мінімум 8 символів"
+
+#: accounts/templates/accounts/register.html:87
+msgid "Confirm password"
+msgstr "Підтвердження пароля"
+
+#: accounts/templates/accounts/register.html:90
+msgid "Repeat your password"
+msgstr "Повторіть пароль"
+
+#: accounts/templates/accounts/register.html:107
+msgid "Already have an account?"
+msgstr "Вже маєте акаунт?"
+
+#: accounts/views.py:22
+msgid "Your request has been submitted. Please wait for administrator approval"
+msgstr "Заявку створено. Очікуйте підтвердження адміністратора"
+
+#: accounts/views.py:70
+msgid "Your profile was successfully updated"
+msgstr "Профіль успішно оновлено"
+
+#: appointments/apps.py:7
+msgid "Appointments and procedures"
+msgstr "Записи та процедури"
+
+#: appointments/forms.py:29
+msgid "End time must be later than start time."
+msgstr "Час завершення має бути пізніше за час початку."
+
+#: appointments/forms.py:47
+msgid "This master already has an appointment at the selected time."
+msgstr "У цього майстра вже є запис на вибраний час."
+
+#: appointments/models.py:10
+msgid "procedure name"
+msgstr "назва процедури"
+
+#: appointments/models.py:12
+msgid "duration in minutes"
+msgstr "тривалість у хвилинах"
+
+#: appointments/models.py:19
+#, python-format
+msgid "%(minutes)02d min"
+msgstr "%(minutes)02d хв"
+
+#: appointments/models.py:25
+msgid "procedures"
+msgstr "процедури"
+
+#: appointments/models.py:26 appointments/models.py:34
+msgid "procedure"
+msgstr "процедура"
+
+#: appointments/models.py:30
+msgid "master"
+msgstr "майстер"
+
+#: appointments/models.py:31
+msgid "date"
+msgstr "дата"
+
+#: appointments/models.py:32
+msgid "start time"
+msgstr "час початку"
+
+#: appointments/models.py:33
+msgid "end time"
+msgstr "час завершення"
+
+#: appointments/models.py:35
+msgid "client name"
+msgstr "ім'я клієнта"
+
+#: appointments/models.py:36
+msgid "created at"
+msgstr "створено"
+
+#: appointments/models.py:37
+msgid "updated at"
+msgstr "оновлено"
+
+#: appointments/models.py:49
+msgid "appointments"
+msgstr "записи"
+
+#: appointments/models.py:50
+msgid "appointment"
+msgstr "запис"
+
+#: appointments/templates/appointments/calendar.html:33
+#: appointments/templates/appointments/calendar.html:50
+msgid "New appointment"
+msgstr "Новий запис"
+
+#: appointments/templates/appointments/calendar.html:38
+msgid "Shared masters calendar"
+msgstr "Спільний календар майстрів"
+
+#: appointments/templates/appointments/calendar.html:39
+msgid "Loading appointments..."
+msgstr "Завантаження записів..."
+
+#: appointments/templates/appointments/calendar.html:51
+#: appointments/templates/appointments/calendar.html:112
+msgid "Close"
+msgstr "Закрити"
+
+#: appointments/templates/appointments/calendar.html:58
+msgid "Master"
+msgstr "Майстер"
+
+#: appointments/templates/appointments/calendar.html:67
+msgid "Date"
+msgstr "Дата"
+
+#: appointments/templates/appointments/calendar.html:73
+msgid "Start"
+msgstr "Початок"
+
+#: appointments/templates/appointments/calendar.html:77
+msgid "End"
+msgstr "Кінець"
+
+#: appointments/templates/appointments/calendar.html:83
+msgid "Procedure"
+msgstr "Процедура"
+
+#: appointments/templates/appointments/calendar.html:85
+msgid "select a procedure"
+msgstr "оберіть процедуру"
+
+#: appointments/templates/appointments/calendar.html:95
+msgid "Client name"
+msgstr "Ім'я клієнта"
+
+#: appointments/templates/appointments/calendar.html:95
+msgid "optional"
+msgstr "необов'язково"
+
+#: appointments/templates/appointments/calendar.html:96
+msgid "Enter a name..."
+msgstr "Введіть ім'я..."
+
+#: appointments/templates/appointments/calendar.html:100
+#: appointments/templates/appointments/calendar.html:117
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: appointments/templates/appointments/calendar.html:101
+#: appointments/templates/appointments/calendar.html:118
+msgid "Delete"
+msgstr "Видалити"
+
+#: appointments/templates/appointments/calendar.html:102
+msgid "Save"
+msgstr "Зберегти"
+
+#: appointments/templates/appointments/calendar.html:111
+msgid "Delete appointment?"
+msgstr "Видалити запис?"
+
+#: appointments/templates/appointments/calendar.html:115
+msgid "This action cannot be undone."
+msgstr "Цю дію не можна скасувати."
+
+#: conf/settings.py:130
+msgid "English"
+msgstr "Англійська"
+
+#: conf/settings.py:131
+msgid "Ukrainian"
+msgstr "Українська"
