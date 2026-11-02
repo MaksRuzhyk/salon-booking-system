@@ -19,6 +19,7 @@
       <span class="header__logo-text">Mani V Kato</span>
     </div>
     <nav class="header__nav">
+      {% include "accounts/_language_switcher.html" %}
       <a href="{% url 'appointments:index' %}" class="btn-ghost">← {% translate "Calendar" %}</a>
       <form method="post" action="{% url 'accounts:logout' %}">
         {% csrf_token %}

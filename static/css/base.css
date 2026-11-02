@@ -248,3 +248,32 @@ body {
     grid-template-columns: 1fr;
   }
 }
+.lang-switch {
+  display: flex;
+  gap: 4px;
+}
+
+.lang-switch__btn {
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 4px 8px;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.lang-switch__btn:hover {
+  color: var(--text-primary);
+}
+
+.lang-switch__btn.is-active {
+  color: var(--text-primary);
+  border-color: currentColor;
+}
+
+.auth-footer .lang-switch {
+  justify-content: center;
+  margin-top: 12px;
+}

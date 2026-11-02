@@ -74,6 +74,7 @@
       <div class="auth-footer">
         {% translate "Don't have an account?" %}
         <a href="{% url 'accounts:register' %}" class="auth-link">{% translate "Sign up" %}</a>
+        {% include "accounts/_language_switcher.html" %}
       </div>
 
     </div>

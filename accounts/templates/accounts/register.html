@@ -106,6 +106,7 @@
         <div class="auth-footer">
             {% translate "Already have an account?" %}
             <a href="{% url 'accounts:login' %}" class="auth-link">{% translate "Log in" %}</a>
+            {% include "accounts/_language_switcher.html" %}
         </div>
 
     </div>

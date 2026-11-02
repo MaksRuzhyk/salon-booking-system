@@ -1,0 +1,12 @@
+{% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+{% get_available_languages as AVAILABLE_LANGUAGES %}
+<form action="{% url 'set_language' %}" method="post" class="lang-switch">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+    {% for code, name in AVAILABLE_LANGUAGES %}
+    <button type="submit" name="language" value="{{ code }}"
+            class="lang-switch__btn{% if code == CURRENT_LANGUAGE %} is-active{% endif %}"
+            title="{{ name }}">{{ code|upper }}</button>
+    {% endfor %}
+</form>

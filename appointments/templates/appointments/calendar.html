@@ -19,6 +19,7 @@
       <span class="header__logo-text">Mani V Kato</span>
     </div>
     <nav class="header__nav">
+      {% include "accounts/_language_switcher.html" %}
       <span class="header__user">{{ request.user.get_full_name|default:request.user.username }}</span>
       <a href="{% url 'accounts:profile' %}" class="btn btn--ghost">{% translate "Profile" %}</a>
       <form method="post" action="{% url 'accounts:logout' %}">
