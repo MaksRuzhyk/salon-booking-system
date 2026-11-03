@@ -40,8 +40,8 @@ Booksy, and the salon has since switched over completely and runs its real booki
 The only requirement is [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 
 ```bash
-git clone https://github.com/MaksRuzhyk/mani_v_kato_booking_calendar.git
-cd mani_v_kato_booking_calendar
+git clone https://github.com/MaksRuzhyk/salon-booking-system.git
+cd salon-booking-system
 
 cp .env.docker.example .env.docker
 docker compose up --build
